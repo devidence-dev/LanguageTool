@@ -1,0 +1,66 @@
+name: 🚀 Build and Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      lt_version:
+        description: "LanguageTool version (e.g. 6.8)"
+        required: true
+        default: "6.8"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  # ==========================================
+  # 🏗️ Build & Push image
+  # ==========================================
+  build:
+    name: 🏗️ Build & Push image
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Zot
+        run: docker login zot.devidence.dev -u "$ZOT_USERNAME" -p "$ZOT_PASSWORD"
+
+      - name: "🏗️ Build image ${{ inputs.lt_version }}"
+        run: |
+          ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+          docker build \
+            --platform linux/${ARCH} \
+            --build-arg LT_VERSION=${{ inputs.lt_version }} \
+            -t zot.devidence.dev/languagetool:${{ inputs.lt_version }} \
+            -t zot.devidence.dev/languagetool:latest \
+            .
+
+      - name: "📦 Push ${{ inputs.lt_version }} to Zot"
+        run: |
+          docker push zot.devidence.dev/languagetool:${{ inputs.lt_version }}
+          docker push zot.devidence.dev/languagetool:latest
+
+  # ==========================================
+  # 🚀 Deploy to production
+  # ==========================================
+  deploy:
+    name: 🚀 Deploy to production
+    needs: build
+    runs-on: self-hosted
+    environment: production
+    steps:
+      - name: "🚀 Bump homelab to ${{ inputs.lt_version }}"
+        env:
+          HOMELAB_DEPLOY_TOKEN: ${{ secrets.HOMELAB_DEPLOY_TOKEN }}
+        run: |
+          rm -rf /tmp/homelab-languagetool-deploy
+          git clone https://x-access-token:${HOMELAB_DEPLOY_TOKEN}@github.com/devidence-dev/homelab.git /tmp/homelab-languagetool-deploy
+          cd /tmp/homelab-languagetool-deploy
+          sed -i "s|tag: .*|tag: \"${{ inputs.lt_version }}\"|" \
+            kubernetes/internal-apps/languagetool/values.yaml
+          git config user.email "ci@devidence.dev"
+          git config user.name "homelab-ci"
+          git add kubernetes/internal-apps/languagetool/values.yaml
+          git diff --staged --quiet && echo "No changes to commit" || (git commit -m "chore(languagetool): bump to ${{ inputs.lt_version }}" && git push)
+          rm -rf /tmp/homelab-languagetool-deploy

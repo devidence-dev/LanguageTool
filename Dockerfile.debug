@@ -1,0 +1,27 @@
+# Stage 1: Download and build LanguageTool (from GitHub source)
+FROM maven:3.9-eclipse-temurin-21-alpine AS builder
+ARG LT_VERSION=6.7  # Change to the latest tag at https://github.com/languagetool-org/languagetool/tags
+
+RUN apk add --no-cache git unzip
+
+WORKDIR /src
+
+RUN git clone --depth 1 --branch v${LT_VERSION} https://github.com/languagetool-org/languagetool.git /src/languagetool
+
+WORKDIR /src/languagetool
+
+RUN mvn -pl languagetool-standalone -am -DskipTests package \
+    && unzip languagetool-standalone/target/LanguageTool-${LT_VERSION}.zip -d /dist
+
+# Stage 2: Debug version (with BusyBox shell)
+FROM gcr.io/distroless/java21-debian13 AS languagetool-debug
+
+ARG LT_VERSION=6.7
+
+COPY --from=builder /dist/LanguageTool-${LT_VERSION}/ /languagetool/
+
+WORKDIR /languagetool
+
+EXPOSE 8010
+
+CMD ["languagetool-server.jar", "--port", "8010", "--public", "--allow-origin", "*"]

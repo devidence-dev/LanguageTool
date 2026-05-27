@@ -1,0 +1,19 @@
+services:
+  languagetool:
+    container_name: languagetool
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        LT_VERSION: ${LT_VERSION:-6.7}
+    image: devidence-languagetool:${LT_VERSION:-6.7}
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 768M
+
+
