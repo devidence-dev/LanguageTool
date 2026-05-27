@@ -1,5 +1,5 @@
 # Stage 1: Build LanguageTool from source and strip unused language modules
-FROM maven:3.9.15-eclipse-temurin-21-alpine AS builder
+FROM maven:3.9.16-eclipse-temurin-21-alpine AS builder
 ARG LT_VERSION=6.7
 
 RUN apk add --no-cache git unzip

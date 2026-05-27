@@ -33,13 +33,11 @@ jobs:
             --platform linux/${ARCH} \
             --build-arg LT_VERSION=${{ inputs.lt_version }} \
             -t zot.devidence.dev/languagetool:${{ inputs.lt_version }} \
-            -t zot.devidence.dev/languagetool:latest \
             .
 
       - name: "📦 Push ${{ inputs.lt_version }} to Zot"
         run: |
           docker push zot.devidence.dev/languagetool:${{ inputs.lt_version }}
-          docker push zot.devidence.dev/languagetool:latest
 
   # ==========================================
   # 🚀 Deploy to production
