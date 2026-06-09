@@ -1,6 +1,6 @@
 # Stage 1: Build LanguageTool from source and strip unused language modules
 FROM maven:3.9.16-eclipse-temurin-21-alpine AS builder
-ARG LT_VERSION=6.7
+ARG LT_VERSION=6.8
 
 RUN apk add --no-cache git unzip
 
@@ -23,7 +23,7 @@ RUN find /dist/LanguageTool-${LT_VERSION} -name "*.jar" \
 # Stage 2: Production image (no shell, minimal attack surface)
 FROM gcr.io/distroless/java21-debian13 AS languagetool
 
-ARG LT_VERSION=6.7
+ARG LT_VERSION=6.8
 
 ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75.0 -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication"
 
@@ -40,4 +40,5 @@ CMD ["languagetool-server.jar", \
      "--config", "server.properties", \
      "--port", "8010", \
      "--public", \
-     "--allow-origin", "*"]
+     "--allow-origin", "*", \
+     "--host", "0.0.0.0"]
