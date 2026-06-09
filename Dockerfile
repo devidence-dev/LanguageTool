@@ -11,10 +11,6 @@ RUN git clone --depth 1 --branch v${LT_VERSION} \
 
 WORKDIR /src/languagetool
 
-# v6.8 changed DEFAULT_HOST to "localhost", breaking external access; restore prior behavior
-RUN sed -i 's/DEFAULT_HOST = "localhost"/DEFAULT_HOST = null/' \
-    languagetool-server/src/main/java/org/languagetool/server/HTTPServerConfig.java
-
 RUN mvn -T 8 -pl languagetool-standalone -am -DskipTests package \
     && unzip languagetool-standalone/target/LanguageTool-${LT_VERSION}.zip -d /dist
 
