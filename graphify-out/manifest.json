@@ -1,0 +1,22 @@
+{
+  ".github/workflows/deploy.yml": {
+    "mtime": 1779911374.0275712,
+    "ast_hash": "b196ef107d2072b53b20148475b46d0f",
+    "semantic_hash": "b196ef107d2072b53b20148475b46d0f"
+  },
+  "README.md": {
+    "mtime": 1779910559.073779,
+    "ast_hash": "ffce76073505a5672db490ad34b68820",
+    "semantic_hash": "ffce76073505a5672db490ad34b68820"
+  },
+  "docker-compose.override.yml": {
+    "mtime": 1779905950.7883985,
+    "ast_hash": "1f6b2fee56dd4850382000b4a8f1ff4c",
+    "semantic_hash": "1f6b2fee56dd4850382000b4a8f1ff4c"
+  },
+  "docker-compose.yml": {
+    "mtime": 1779905950.8363953,
+    "ast_hash": "391c5dd9b37f905dfed8838310fdb892",
+    "semantic_hash": "391c5dd9b37f905dfed8838310fdb892"
+  }
+}

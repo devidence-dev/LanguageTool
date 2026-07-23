@@ -1,0 +1,856 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "local_docker_compose_deployment",
+        "label": "Local Docker Compose Deployment Pattern",
+        "nodes": [
+          "readme",
+          "docker_compose_languagetool_service",
+          "docker_compose_override_languagetool_service",
+          "docker_compose_dockerfile_build"
+        ],
+        "relation": "participate_in",
+        "confidence": "INFERRED",
+        "confidence_score": 0.75,
+        "source_file": "README.md"
+      },
+      {
+        "id": "cicd_homelab_release_pipeline",
+        "label": "CI/CD Release Pipeline to Homelab Kubernetes",
+        "nodes": [
+          "github_workflows_deploy_build_job",
+          "github_workflows_deploy_deploy_job",
+          "github_workflows_deploy_zot_registry",
+          "github_workflows_deploy_homelab_repo"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": ".github/workflows/deploy.yml"
+      },
+      {
+        "id": "lt_version_propagation_flow",
+        "label": "LT_VERSION Propagation Across Build, Compose, and Deployment",
+        "nodes": [
+          "github_workflows_deploy_lt_version_input",
+          "docker_compose_lt_version_arg",
+          "readme_lt_version",
+          "github_workflows_deploy_languagetool_values_yaml"
+        ],
+        "relation": "form",
+        "confidence": "INFERRED",
+        "confidence_score": 0.85,
+        "source_file": ".github/workflows/deploy.yml"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "Build and Deploy Workflow",
+      "file_type": "code",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Split into separate build and deploy jobs so a successful image build/push gates the production rollout (deploy job declares needs: build), and the 'production' GitHub environment adds a protection/approval point before the homelab cluster is updated.",
+      "id": "github_workflows_deploy_workflow",
+      "community": 0,
+      "norm_label": "build and deploy workflow"
+    },
+    {
+      "label": "build job (Build & Push image)",
+      "file_type": "code",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_build_job",
+      "community": 0,
+      "norm_label": "build job (build & push image)"
+    },
+    {
+      "label": "deploy job (Deploy to production)",
+      "file_type": "code",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_deploy_job",
+      "community": 0,
+      "norm_label": "deploy job (deploy to production)"
+    },
+    {
+      "label": "lt_version workflow_dispatch input",
+      "file_type": "code",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_lt_version_input",
+      "community": 0,
+      "norm_label": "lt_version workflow_dispatch input"
+    },
+    {
+      "label": "Zot registry (zot.devidence.dev)",
+      "file_type": "concept",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_zot_registry",
+      "community": 0,
+      "norm_label": "zot registry (zot.devidence.dev)"
+    },
+    {
+      "label": "HOMELAB_DEPLOY_TOKEN secret",
+      "file_type": "code",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_homelab_deploy_token",
+      "community": 0,
+      "norm_label": "homelab_deploy_token secret"
+    },
+    {
+      "label": "devidence-dev/homelab repository",
+      "file_type": "concept",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_homelab_repo",
+      "community": 0,
+      "norm_label": "devidence-dev/homelab repository"
+    },
+    {
+      "label": "kubernetes/internal-apps/languagetool/values.yaml",
+      "file_type": "concept",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_languagetool_values_yaml",
+      "community": 2,
+      "norm_label": "kubernetes/internal-apps/languagetool/values.yaml"
+    },
+    {
+      "label": "actions/checkout@v4",
+      "file_type": "code",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_actions_checkout",
+      "community": 0,
+      "norm_label": "actions/checkout@v4"
+    },
+    {
+      "label": "zot.devidence.dev/languagetool image",
+      "file_type": "code",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_pushed_image",
+      "community": 2,
+      "norm_label": "zot.devidence.dev/languagetool image"
+    },
+    {
+      "label": "README.md (LanguageTool Docker)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme",
+      "community": 1,
+      "norm_label": "readme.md (languagetool docker)"
+    },
+    {
+      "label": "Dockerfile (as referenced in README)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_dockerfile",
+      "community": 1,
+      "norm_label": "dockerfile (as referenced in readme)"
+    },
+    {
+      "label": "docker-compose.yml (as referenced in README)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_docker_compose_yml",
+      "community": 1,
+      "norm_label": "docker-compose.yml (as referenced in readme)"
+    },
+    {
+      "label": "server.properties",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_server_properties",
+      "community": 1,
+      "norm_label": "server.properties"
+    },
+    {
+      "label": ".env.example",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_env_example",
+      "community": 1,
+      "norm_label": ".env.example"
+    },
+    {
+      "label": "LT_VERSION variable (README config)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_lt_version",
+      "community": 2,
+      "norm_label": "lt_version variable (readme config)"
+    },
+    {
+      "label": "TZ variable (README config)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_tz",
+      "community": 3,
+      "norm_label": "tz variable (readme config)"
+    },
+    {
+      "label": "devidence-languagetool image (as referenced in README)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_devidence_languagetool_image",
+      "community": 1,
+      "norm_label": "devidence-languagetool image (as referenced in readme)"
+    },
+    {
+      "label": "languagetool service (docker-compose.override.yml)",
+      "file_type": "code",
+      "source_file": "docker-compose.override.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "cloudflared-net is left enabled by default as the intended way to expose LanguageTool externally via a Cloudflare tunnel, while nginx-proxy and Caddy network/SSL wiring are left commented out as alternative, opt-in options rather than defaults.",
+      "id": "docker_compose_override_languagetool_service",
+      "community": 4,
+      "norm_label": "languagetool service (docker-compose.override.yml)"
+    },
+    {
+      "label": "cloudflared-net external network",
+      "file_type": "code",
+      "source_file": "docker-compose.override.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_override_cloudflared_net",
+      "community": 4,
+      "norm_label": "cloudflared-net external network"
+    },
+    {
+      "label": "nginx-reverse-proxy network (commented alternative)",
+      "file_type": "code",
+      "source_file": "docker-compose.override.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_override_nginx_reverse_proxy_net",
+      "community": 4,
+      "norm_label": "nginx-reverse-proxy network (commented alternative)"
+    },
+    {
+      "label": "caddy-net network (commented alternative)",
+      "file_type": "code",
+      "source_file": "docker-compose.override.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_override_caddy_net",
+      "community": 4,
+      "norm_label": "caddy-net network (commented alternative)"
+    },
+    {
+      "label": "languagetool service (docker-compose.yml)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Configured with restart: unless-stopped so the container recovers automatically without manual intervention, matching the README's stated intent of a simple, low-maintenance Docker setup.",
+      "id": "docker_compose_languagetool_service",
+      "community": 3,
+      "norm_label": "languagetool service (docker-compose.yml)"
+    },
+    {
+      "label": "Dockerfile build context (context: ., dockerfile: Dockerfile)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_dockerfile_build",
+      "community": 1,
+      "norm_label": "dockerfile build context (context: ., dockerfile: dockerfile)"
+    },
+    {
+      "label": "LT_VERSION build arg (default 6.7)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_lt_version_arg",
+      "community": 2,
+      "norm_label": "lt_version build arg (default 6.7)"
+    },
+    {
+      "label": "devidence-languagetool:${LT_VERSION} image",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_image",
+      "community": 2,
+      "norm_label": "devidence-languagetool:${lt_version} image"
+    },
+    {
+      "label": "TZ environment variable (default UTC)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_tz_env",
+      "community": 3,
+      "norm_label": "tz environment variable (default utc)"
+    },
+    {
+      "label": "deploy.resources.limits (1.0 CPU / 768M memory)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_resource_limits",
+      "community": 3,
+      "norm_label": "deploy.resources.limits (1.0 cpu / 768m memory)"
+    }
+  ],
+  "links": [
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_workflow",
+      "target": "github_workflows_deploy_build_job"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_workflow",
+      "target": "github_workflows_deploy_deploy_job"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_build_job",
+      "target": "github_workflows_deploy_actions_checkout"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_build_job",
+      "target": "github_workflows_deploy_lt_version_input"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_build_job",
+      "target": "github_workflows_deploy_pushed_image"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_build_job",
+      "target": "github_workflows_deploy_zot_registry"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_deploy_job",
+      "target": "github_workflows_deploy_build_job"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_deploy_job",
+      "target": "github_workflows_deploy_homelab_deploy_token"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_deploy_job",
+      "target": "github_workflows_deploy_homelab_repo"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_deploy_job",
+      "target": "github_workflows_deploy_languagetool_values_yaml"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_deploy_job",
+      "target": "github_workflows_deploy_lt_version_input"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_lt_version_input",
+      "target": "docker_compose_lt_version_arg"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_languagetool_values_yaml",
+      "target": "docker_compose_lt_version_arg"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_pushed_image",
+      "target": "docker_compose_image"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_devidence_languagetool_image"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_docker_compose_yml"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_dockerfile"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_env_example"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_lt_version"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_server_properties"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_tz"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_docker_compose_yml",
+      "target": "readme_dockerfile"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_dockerfile",
+      "target": "docker_compose_dockerfile_build"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_docker_compose_yml",
+      "target": "docker_compose_languagetool_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_docker_compose_yml",
+      "target": "readme_devidence_languagetool_image"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_lt_version_arg",
+      "target": "readme_lt_version"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_tz_env",
+      "target": "readme_tz"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_image",
+      "target": "readme_devidence_languagetool_image"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docker-compose.override.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_override_languagetool_service",
+      "target": "docker_compose_languagetool_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.2,
+      "source_file": "docker-compose.override.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_override_languagetool_service",
+      "target": "docker_compose_override_caddy_net"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.override.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_override_languagetool_service",
+      "target": "docker_compose_override_cloudflared_net"
+    },
+    {
+      "relation": "references",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.2,
+      "source_file": "docker-compose.override.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_override_languagetool_service",
+      "target": "docker_compose_override_nginx_reverse_proxy_net"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_languagetool_service",
+      "target": "docker_compose_dockerfile_build"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_languagetool_service",
+      "target": "docker_compose_image"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_languagetool_service",
+      "target": "docker_compose_lt_version_arg"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_languagetool_service",
+      "target": "docker_compose_resource_limits"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_languagetool_service",
+      "target": "docker_compose_tz_env"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_dockerfile_build",
+      "target": "docker_compose_lt_version_arg"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docker_compose_image",
+      "target": "docker_compose_lt_version_arg"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "local_docker_compose_deployment",
+      "label": "Local Docker Compose Deployment Pattern",
+      "nodes": [
+        "readme",
+        "docker_compose_languagetool_service",
+        "docker_compose_override_languagetool_service",
+        "docker_compose_dockerfile_build"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "README.md"
+    },
+    {
+      "id": "cicd_homelab_release_pipeline",
+      "label": "CI/CD Release Pipeline to Homelab Kubernetes",
+      "nodes": [
+        "github_workflows_deploy_build_job",
+        "github_workflows_deploy_deploy_job",
+        "github_workflows_deploy_zot_registry",
+        "github_workflows_deploy_homelab_repo"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml"
+    },
+    {
+      "id": "lt_version_propagation_flow",
+      "label": "LT_VERSION Propagation Across Build, Compose, and Deployment",
+      "nodes": [
+        "github_workflows_deploy_lt_version_input",
+        "docker_compose_lt_version_arg",
+        "readme_lt_version",
+        "github_workflows_deploy_languagetool_values_yaml"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/workflows/deploy.yml"
+    }
+  ],
+  "built_at_commit": "e730377b398a1d1da8407430dcb251722f329100"
+}
