@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # Stage 1: Build LanguageTool from source and strip unused language modules
 FROM maven:3.9.16-eclipse-temurin-21-alpine AS builder
 ARG LT_VERSION=6.8
@@ -11,7 +13,12 @@ RUN git clone --depth 1 --branch v${LT_VERSION} \
 
 WORKDIR /src/languagetool
 
-RUN mvn -T 8 -pl languagetool-standalone -am -DskipTests package \
+# Cache mount for ~/.m2: persists across builds on the same runner host, so a rebuild
+# (base image/JDK bump, no pom.xml change) reuses already-downloaded dependencies instead
+# of re-fetching them from Maven Central every time. -T 1C scales threads to the host's
+# actual core count instead of a hardcoded number.
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn -T 1C -pl languagetool-standalone -am -DskipTests package \
     && unzip languagetool-standalone/target/LanguageTool-${LT_VERSION}.zip -d /dist
 
 # Keep only English and Spanish language modules

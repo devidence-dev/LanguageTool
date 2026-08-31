@@ -22,6 +22,8 @@ jobs:
     permissions:
       contents: read
       id-token: write # required so this job can request a GitHub OIDC token for Infisical
+    outputs:
+      digest: ${{ steps.digest.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -53,6 +55,12 @@ jobs:
         run: |
           docker push ghcr.io/devidence-dev/languagetool:${{ inputs.lt_version }}
 
+      - name: Resolve pushed image digest
+        id: digest
+        run: |
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "ghcr.io/devidence-dev/languagetool:${{ inputs.lt_version }}" | cut -d'@' -f2)
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+
   # ==========================================
   # 🚀 Deploy to production
   # ==========================================
@@ -65,14 +73,19 @@ jobs:
       - name: "🚀 Bump homelab to ${{ inputs.lt_version }}"
         env:
           HOMELAB_DEPLOY_TOKEN: ${{ secrets.HOMELAB_DEPLOY_TOKEN }}
+          DIGEST: ${{ needs.build.outputs.digest }}
         run: |
           rm -rf /tmp/homelab-languagetool-deploy
           git clone https://x-access-token:${HOMELAB_DEPLOY_TOKEN}@github.com/devidence-dev/homelab.git /tmp/homelab-languagetool-deploy
           cd /tmp/homelab-languagetool-deploy
-          sed -i "s|tag: .*|tag: \"${{ inputs.lt_version }}\"|" \
-            kubernetes/internal-apps/languagetool/values.yaml
+          VALUES=kubernetes/internal-apps/languagetool/values.yaml
+          sed -i "s|tag: .*|tag: \"${{ inputs.lt_version }}\"|" "$VALUES"
+          # Escrito en cada build: si se re-corre con el mismo lt_version (solo cambió la
+          # imagen base o el JDK, no la versión de LanguageTool), el tag no cambia pero el
+          # digest sí — es lo que le da a ArgoCD un diff real que sincronizar.
+          sed -i "s|digest: .*|digest: \"${DIGEST}\"|" "$VALUES"
           git config user.email "ci@devidence.dev"
           git config user.name "homelab-ci"
-          git add kubernetes/internal-apps/languagetool/values.yaml
+          git add "$VALUES"
           git diff --staged --quiet && echo "No changes to commit" || (git commit -m "chore(languagetool): bump to ${{ inputs.lt_version }}" && git push)
           rm -rf /tmp/homelab-languagetool-deploy
