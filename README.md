@@ -8,6 +8,7 @@
 - `docker-compose.yml` para iniciar el servicio fácilmente
 - `server.properties` con configuración de servidor y rendimiento
 - `.env.example` para personalizar variables de entorno
+- Java 25 LTS en producción (Temurin 21 para compilar y Distroless Java 25 para ejecutar)
 
 ## ⚙️ Requisitos
 
@@ -42,7 +43,7 @@ El servicio se construye usando el `Dockerfile` y se ejecuta con `docker-compose
 
 ## 📝 Configuración
 
-- `LT_VERSION`: versión de LanguageTool (por defecto `6.7`)
+- `LT_VERSION`: versión de LanguageTool (por defecto `6.8`)
 - `TZ`: zona horaria (por defecto `UTC`)
 
 La configuración del servidor está en `server.properties`.
@@ -50,6 +51,9 @@ La configuración del servidor está en `server.properties`.
 ## 💡 Notas
 
 - El contenedor está configurado para reiniciar automáticamente con `restart: unless-stopped`
+- La imagen final se ejecuta como usuario no privilegiado y no incluye shell ni gestor de paquetes
+- Para diagnóstico, `Dockerfile.debug` genera una variante con BusyBox usando la misma versión de LanguageTool y Java
+- El workflow valida el endpoint `/v2/check` antes de publicar y desplegar una imagen
 - El proyecto está pensado para correr de forma sencilla en entornos Docker
 
 ## 📚 Extras

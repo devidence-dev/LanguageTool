@@ -1,27 +1,47 @@
+# syntax=docker/dockerfile:1
+
 # Stage 1: Download and build LanguageTool (from GitHub source)
-FROM maven:3.9-eclipse-temurin-21-alpine AS builder
-ARG LT_VERSION=6.7  # Change to the latest tag at https://github.com/languagetool-org/languagetool/tags
+# LanguageTool 6.8 targets Java 17, but its annotation processors do not compile
+# correctly on JDK 25 yet. Build on 21 and run the resulting bytecode on Java 25.
+FROM maven:3.9.16-eclipse-temurin-21-alpine AS builder
+ARG LT_VERSION=6.8
 
 RUN apk add --no-cache git unzip
 
 WORKDIR /src
 
-RUN git clone --depth 1 --branch v${LT_VERSION} https://github.com/languagetool-org/languagetool.git /src/languagetool
+RUN git clone --depth 1 --branch v${LT_VERSION} \
+    https://github.com/languagetool-org/languagetool.git /src/languagetool
 
 WORKDIR /src/languagetool
 
-RUN mvn -pl languagetool-standalone -am -DskipTests package \
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn -T 1C -pl languagetool-standalone -am -DskipTests package \
     && unzip languagetool-standalone/target/LanguageTool-${LT_VERSION}.zip -d /dist
 
-# Stage 2: Debug version (with BusyBox shell)
-FROM gcr.io/distroless/java21-debian13 AS languagetool-debug
+RUN find /dist/LanguageTool-${LT_VERSION} -name "*.jar" \
+    | grep -E "language-" \
+    | grep -Ev "language-(en|es|detector)" \
+    | xargs rm -f
 
-ARG LT_VERSION=6.7
+# Stage 2: Debug version (with BusyBox shell)
+FROM gcr.io/distroless/java25-debian13:debug-nonroot AS languagetool-debug
+
+ARG LT_VERSION=6.8
+
+ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75.0 -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication"
 
 COPY --from=builder /dist/LanguageTool-${LT_VERSION}/ /languagetool/
+COPY server.properties /languagetool/server.properties
 
 WORKDIR /languagetool
 
+USER nonroot
+
 EXPOSE 8010
 
-CMD ["languagetool-server.jar", "--port", "8010", "--public", "--allow-origin", "*"]
+CMD ["languagetool-server.jar", \
+     "--config", "server.properties", \
+     "--port", "8010", \
+     "--public", \
+     "--allow-origin", "*"]

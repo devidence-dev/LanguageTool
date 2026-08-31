@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build LanguageTool from source and strip unused language modules
+# LanguageTool 6.8 targets Java 17, but its annotation processors do not compile
+# correctly on JDK 25 yet. Build on 21 and run the resulting bytecode on Java 25.
 FROM maven:3.9.16-eclipse-temurin-21-alpine AS builder
 ARG LT_VERSION=6.8
 
@@ -28,7 +30,7 @@ RUN find /dist/LanguageTool-${LT_VERSION} -name "*.jar" \
     | xargs rm -f
 
 # Stage 2: Production image (no shell, minimal attack surface)
-FROM gcr.io/distroless/java21-debian13 AS languagetool
+FROM gcr.io/distroless/java25-debian13:nonroot AS languagetool
 
 ARG LT_VERSION=6.8
 
